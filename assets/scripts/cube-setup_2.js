@@ -1,15 +1,43 @@
-// assets/scripts/cube-setup.js
+// assets/scripts/cube-setup_2.js
 
-const colors = { U:'#ffffff', L:'#ffa500', F:'#00ff00', R:'#ff0000', B:'#0000ff', D:'#ffff00' };
-const state  = { U:Array(9).fill('U'), L:Array(9).fill('L'), F:Array(9).fill('F'),
-                 R:Array(9).fill('R'), B:Array(9).fill('B'), D:Array(9).fill('D') };
-const colorLetters = { U:'W', L:'O', F:'G', R:'R', B:'B', D:'Y' };
+// Farbdefinition inklusive Grau (X)
+const colors = {
+  U: '#ffffff',  // Weiß
+  L: '#ffa500',  // Orange
+  F: '#00ff00',  // Grün
+  R: '#ff0000',  // Rot
+  B: '#0000ff',  // Blau
+  D: '#ffff00',  // Gelb
+  X: '#808080'   // Grau
+};
+
+// Anfangszustand (alle neun Felder pro Fläche)
+const state = {
+  U: Array(9).fill('U'),
+  L: Array(9).fill('L'),
+  F: Array(9).fill('F'),
+  R: Array(9).fill('R'),
+  B: Array(9).fill('B'),
+  D: Array(9).fill('D')
+};
+
+// Buchstaben für Ergebnis-String (inkl. Grau als 'X')
+const colorLetters = {
+  U: 'W',
+  L: 'O',
+  F: 'G',
+  R: 'R',
+  B: 'B',
+  D: 'Y',
+  X: 'X'
+};
+
 let selectedColor = 'U';
 
 function setupPalette() {
   const pal = document.querySelector('.palette');
   pal.innerHTML = '';
-  for (let [face, hex] of Object.entries(colors)) {
+  Object.entries(colors).forEach(([face, hex]) => {
     const btn = document.createElement('button');
     btn.style.background = hex;
     btn.dataset.face = face;
@@ -21,19 +49,19 @@ function setupPalette() {
     });
     if (face === selectedColor) btn.classList.add('selected');
     pal.appendChild(btn);
-  }
+  });
 }
 
 function getCell(r, c) {
-  if (r<3 && c>=3 && c<6) return ['U', r*3 + (c-3)];
-  if (r>=3 && r<6) {
-    const rr = r-3;
-    if (c<3)  return ['L', rr*3 + c];
-    if (c<6)  return ['F', rr*3 + (c-3)];
-    if (c<9)  return ['R', rr*3 + (c-6)];
-    if (c<12) return ['B', rr*3 + (c-9)];
+  if (r < 3 && c >= 3 && c < 6) return ['U', r * 3 + (c - 3)];
+  if (r >= 3 && r < 6) {
+    const rr = r - 3;
+    if (c < 3)  return ['L', rr * 3 + c];
+    if (c < 6)  return ['F', rr * 3 + (c - 3)];
+    if (c < 9)  return ['R', rr * 3 + (c - 6)];
+    if (c < 12) return ['B', rr * 3 + (c - 9)];
   }
-  if (r>=6 && r<9 && c>=3 && c<6) return ['D', (r-6)*3 + (c-3)];
+  if (r >= 6 && r < 9 && c >= 3 && c < 6) return ['D', (r - 6) * 3 + (c - 3)];
   return null;
 }
 
@@ -48,7 +76,7 @@ function setupGrid() {
       if (cell) {
         const [f, i] = cell;
         div.dataset.face = f;
-        div.dataset.idx  = i;
+        div.dataset.idx = i;
         div.tabIndex = 0;
         setColor(div);
         div.addEventListener('click', () => assignColor(div));
@@ -83,20 +111,30 @@ function setColor(div) {
 document.addEventListener('DOMContentLoaded', () => {
   setupPalette();
   setupGrid();
+
+  // Farbstring erzeugen
   document.getElementById('StringErzeugung').addEventListener('click', () => {
-    const cnt = {U:0,L:0,F:0,R:0,B:0,D:0};
-    Object.values(state).flat().forEach(c => cnt[c]++);
-    if (!Object.values(cnt).every(x => x===9)) {
-      alert('Jede Farbe muss genau 9× vorkommen!');
+    let s2 = '';
+    ['U','R','F','D','L','B'].forEach(f => {
+      state[f].forEach(st => { s2 += colorLetters[st]; });
+    });
+    // Ausgabe und Eingabefeld füllen
+    document.getElementById('result-colors').innerText = 'Colors: ' + s2;
+    const input = document.getElementById('colorstring');
+    input.value = s2;
+  });
+
+  // An Simulator übergeben
+  document.getElementById('applyColorString').addEventListener('click', () => {
+    const str = document.getElementById('colorstring').value.trim().toUpperCase();
+    if (str.length !== 54) {
+      alert('Der Farbstring muss genau 54 Zeichen enthalten.');
       return;
     }
-    let s2 = '';
-    ['U','R','F','D','L','B'].forEach(f =>
-      state[f].forEach(st => {
-        s2 += colorLetters[st];
-      })
-    );
-    document.getElementById('result-colors').innerText = 'Colors: ' + s2;
-    document.getElementById('colorstring').value = s2;
+    if (typeof window.applyColorString === 'function') {
+      window.applyColorString(str);
+    } else {
+      console.error('Simulator-Funktion nicht verfügbar.');
+    }
   });
 });

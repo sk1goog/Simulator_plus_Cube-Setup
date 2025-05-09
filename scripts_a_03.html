@@ -50,15 +50,23 @@
     <h4>Rubik's Cube Setup + Simulator</h4>
     <div class="palette mb-3"></div>
     <div class="cube-net mb-3"></div>
+
+    <!-- Farbstring erzeugen -->
     <button id="StringErzeugung" class="btn btn-secondary mb-2">Farbstring erzeugen</button>
-    <button id="Übernehmen" class="btn btn-primary mb-2">An Simulator übergeben</button>
-    <p id="result-colors" class="mb-3"></p>
 
-    <input id="colorstring" type="hidden" />
-    <button id="applyColorString" style="display: none;"></button>
+    <!-- Farbstring Zwischenspeicher (versteckt) -->
+    <p id="result-colors" style="display: none;"></p>
 
+    <!-- Farbstring editierbar -->
+    <input id="colorstring" class="form-control mb-2" type="text" placeholder="Farbstring" />
+
+    <!-- An Simulator übergeben -->
+    <button id="applyColorString" class="btn btn-primary mb-3">An Simulator übergeben</button>
+
+    <!-- Simulator-Canvas -->
     <div id="simulator"></div>
 
+    <!-- Algorithmus Eingabe -->
     <div class="input-group mt-3" style="max-width: 400px;">
       <input id="algo" class="form-control" placeholder="Zugfolge, z.B. R U R' U">
       <button id="start" class="btn btn-outline-secondary">Start</button>
@@ -69,30 +77,8 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-  <!-- Deine getrennten Scripts -->
+  <!-- Getrennte Scripts -->
   <script src="assets/scripts/simulator_2.js"></script>
   <script src="assets/scripts/cube-setup_2.js"></script>
-
-  <!-- Verbindung Setup -> Simulator -->
-  <script>
-    document.getElementById("Übernehmen").addEventListener("click", () => {
-      const result = document.getElementById("result-colors").innerText;
-      const match = result.match(/Colors: ([WROGBY]{54})/);
-      if (!match) {
-        alert("Kein gültiger Farbstring vorhanden. Bitte zuerst erzeugen.");
-        return;
-      }
-      const colorString = match[1];
-
-      const tryApply = () => {
-        if (typeof window.applyColorString === "function") {
-          window.applyColorString(colorString);
-        } else {
-          setTimeout(tryApply, 100);
-        }
-      };
-      tryApply();
-    });
-  </script>
 </body>
 </html>

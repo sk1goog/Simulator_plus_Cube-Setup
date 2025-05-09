@@ -43,6 +43,7 @@
       border: 1px solid #ccc;
       border-radius: 0.5rem;
     }
+    .btn { border: 1px solid #ced4da !important; margin-bottom: 0.75rem; }
   </style>
 </head>
 <body class="bg-white d-flex flex-column min-vh-100">
@@ -52,23 +53,26 @@
     <div class="cube-net mb-3"></div>
 
     <!-- Farbstring erzeugen -->
-    <button id="StringErzeugung" class="btn btn-secondary mb-2">Farbstring erzeugen</button>
-
-    <!-- Farbstring Zwischenspeicher (versteckt) -->
-    <p id="result-colors" style="display: none;"></p>
+    <button id="StringErzeugung" class="btn btn-outline-secondary">Farbstring erzeugen</button>
 
     <!-- Farbstring editierbar -->
     <input id="colorstring" class="form-control mb-2" type="text" placeholder="Farbstring" />
+    <!-- Unsichtbarer Platzhalter für Ergebnisfarben -->
+    <p id="result-colors" style="display:none;"></p>
 
     <!-- An Simulator übergeben -->
-    <button id="applyColorString" class="btn btn-secondary mb-2">An Simulator übergeben</button>
+    <button id="applyColorString" class="btn btn-outline-secondary">An Simulator übergeben</button>
+
+    <!-- Farben zählen -->
+    <button id="countColors" class="btn btn-outline-secondary">Farben zählen</button>
+    <p id="colorCounts" class="mb-3"></p>
 
     <!-- Simulator-Canvas -->
     <div id="simulator"></div>
 
     <!-- Algorithmus Eingabe -->
     <div class="input-group mt-3" style="max-width: 400px;">
-      <input id="algo" class="form-control" placeholder="Zugfolge, z.B. R U R' U">
+      <input id="algo" class="form-control" placeholder="Zugfolge, z.B. R U R' U" style="height: 2.38rem;">
       <button id="start" class="btn btn-outline-secondary">Start</button>
     </div>
   </div>
@@ -80,5 +84,22 @@
   <!-- Getrennte Scripts -->
   <script src="assets/scripts/simulator_2.js"></script>
   <script src="assets/scripts/cube-setup_2.js"></script>
+
+  <!-- Inline Skript: Farben zählen -->
+  <script>
+    document.getElementById('countColors').addEventListener('click', function() {
+      const str = document.getElementById('colorstring').value.trim().toUpperCase();
+      const counts = {W:0, R:0, G:0, B:0, O:0, Y:0, X:0};
+      for (const ch of str) {
+        if (counts.hasOwnProperty(ch)) counts[ch]++;
+      }
+      const names = {W:'Weiß', R:'Rot', G:'Grün', B:'Blau', O:'Orange', Y:'Gelb', X:'Grau'};
+      const output = Object.keys(counts)
+        .filter(key => counts[key] > 0)
+        .map(key => `${names[key]}: ${counts[key]}`)
+        .join(', ');
+      document.getElementById('colorCounts').innerText = output;
+    });
+  </script>
 </body>
 </html>

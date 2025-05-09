@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
     B: 0x0000ff,
     O: 0xffa500,
     Y: 0xffff00,
-    X: 0x808080   // Grau ergänzt
+    X: 0xc0c0c0   // Grau ergänzt
   };
 
   document.getElementById("applyColorString").addEventListener("click", () => {

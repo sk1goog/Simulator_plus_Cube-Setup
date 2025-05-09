@@ -8,7 +8,7 @@ const colors = {
   R: '#ff0000',  // Rot
   B: '#0000ff',  // Blau
   D: '#ffff00',  // Gelb
-  X: '#808080'   // Grau
+  X: '#c0c0c0'   // Grau
 };
 
 // Anfangszustand (alle neun Felder pro Fläche)
